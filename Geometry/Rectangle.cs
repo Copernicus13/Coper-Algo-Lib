@@ -45,6 +45,8 @@
 
         public int Y2 { get { return Y + Height; } }
 
+        public long Area { get { return Width * Height; } }
+
         #endregion
 
         public Rectangle(Point location, Size size)
@@ -67,6 +69,12 @@
         public bool ContainsIncludingEdge(Point point)
         {
             return X1 <= point.X && X2 >= point.X && Y1 <= point.Y && Y2 >= point.Y;
+        }
+
+        public bool IntersectsWith(Rectangle t)
+        {
+            //return Width < t.X || t.Width < X || Height < t.Y || t.Width < Y;
+            return t.X1 < X2 && t.X2 > X1 && t.Y1 < Y2 && t.Y2 > Y1;
         }
     }
 }

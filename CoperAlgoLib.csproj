@@ -1,75 +1,34 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CFEB57E4-2118-467D-9EA7-0D8E6001FEBB}</ProjectGuid>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CoperAlgoLib</RootNamespace>
-    <AssemblyName>CoperAlgoLib</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Combinatorics\Combinations.cs" />
-    <Compile Include="Combinatorics\GenerateOption.cs" />
-    <Compile Include="Combinatorics\IMetaCollection.cs" />
-    <Compile Include="Combinatorics\Permutations.cs" />
-    <Compile Include="Combinatorics\SmallPrimeUtility.cs" />
-    <Compile Include="Combinatorics\Variations.cs" />
-    <Compile Include="Data\ArrayHelpers.cs" />
-    <Compile Include="Data\CircularLinkedList.cs" />
-    <Compile Include="Data\Deque.cs" />
-    <Compile Include="Data\RangeInt.cs">
+    <Compile Update="Data\RangeInt.cs">
       <DependentUpon>Range.tt</DependentUpon>
     </Compile>
-    <Compile Include="Data\RangeUInt.cs">
+    <Compile Update="Data\RangeUInt.cs">
       <DependentUpon>Range.tt</DependentUpon>
     </Compile>
-    <Compile Include="Geometry\Point.cs">
+    <Compile Update="Geometry\Point.cs">
       <DependentUpon>Point.tt</DependentUpon>
     </Compile>
-    <Compile Include="Geometry\PointD.cs">
+    <Compile Update="Geometry\PointD.cs">
       <DependentUpon>Point.tt</DependentUpon>
     </Compile>
-    <Compile Include="Geometry\PointF.cs">
+    <Compile Update="Geometry\PointF.cs">
       <DependentUpon>Point.tt</DependentUpon>
     </Compile>
-    <Compile Include="Geometry\PointUInt.cs">
+    <Compile Update="Geometry\PointUInt.cs">
       <DependentUpon>Point.tt</DependentUpon>
     </Compile>
-    <Compile Include="Geometry\Rectangle.cs" />
-    <Compile Include="Geometry\Size.cs">
+    <Compile Update="Geometry\Size.cs">
       <DependentUpon>Size.tt</DependentUpon>
     </Compile>
-    <Compile Include="Geometry\SizeF.cs">
+    <Compile Update="Geometry\SizeF.cs">
       <DependentUpon>Size.tt</DependentUpon>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Maths.cs" />
-    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Geometry\Point.tt">
@@ -88,12 +47,10 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.2.236301">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
 </Project>

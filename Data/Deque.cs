@@ -6,7 +6,7 @@ namespace CoperAlgoLib.Data
     /// For large dataset, you should consider using a LinkedList
     /// for better performance on Push and Pop operations.
     /// </remarks>
-    public sealed class Deque<T> : List<T>
+    public class Deque<T> : List<T>
     {
         #region Constructors
 

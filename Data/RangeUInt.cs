@@ -22,14 +22,19 @@ namespace CoperAlgoLib.Data
 
         public uint Count { get { return Maximum - Minimum + 1; } }
 
-        public RangeUInt(uint min, uint max)
+        public RangeUInt(uint min, uint? max = default, uint? length = default)
         {
-            _Range = new Tuple<uint, uint>(min, max);
+            if (max.HasValue)
+                _Range = new Tuple<uint, uint>(min, max.Value);
+            else if (length.HasValue)
+                _Range = new Tuple<uint, uint>(min, min + length.Value - 1);
+            else
+                throw new ArgumentNullException();
         }
 
         public bool ContainsValue(uint value)
         {
-			return Comparer<uint>.Default.Compare(Minimum, value) <= 0 &&
+            return Comparer<uint>.Default.Compare(Minimum, value) <= 0 &&
                 Comparer<uint>.Default.Compare(value, Maximum) <= 0;
         }
 
@@ -43,7 +48,7 @@ namespace CoperAlgoLib.Data
             ContainsValue(range.Minimum) || ContainsValue(range.Maximum) ||
             range.ContainsValue(Minimum) || range.ContainsValue(Maximum);
 
-		public RangeUInt Union(RangeUInt range)
+        public RangeUInt Union(RangeUInt range)
         {
             if (!IsOverlapping(range))
                 return Void;

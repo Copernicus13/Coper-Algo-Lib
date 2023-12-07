@@ -10,45 +10,45 @@ using System.Collections.Generic;
 
 namespace CoperAlgoLib.Data
 {
-    public class RangeInt
+    public class RangeLong
     {
-        private Tuple<int, int> _Range;
+        private Tuple<long, long> _Range;
 
-        public static readonly RangeInt Void = new RangeInt(default(int), default(int));
+        public static readonly RangeLong Void = new RangeLong(default(long), default(long));
 
-        public int Minimum { get { return _Range.Item1; } }
+        public long Minimum { get { return _Range.Item1; } }
 
-        public int Maximum { get { return _Range.Item2; } }
+        public long Maximum { get { return _Range.Item2; } }
 
-        public int Count { get { return Maximum - Minimum + 1; } }
+        public long Count { get { return Maximum - Minimum + 1; } }
 
-        public RangeInt(int min, int? max = default, int? length = default)
+        public RangeLong(long min, long? max = default, long? length = default)
         {
             if (max.HasValue)
-                _Range = new Tuple<int, int>(min, max.Value);
+                _Range = new Tuple<long, long>(min, max.Value);
             else if (length.HasValue)
-                _Range = new Tuple<int, int>(min, min + length.Value - 1);
+                _Range = new Tuple<long, long>(min, min + length.Value - 1);
             else
                 throw new ArgumentNullException();
         }
 
-        public bool ContainsValue(int value)
+        public bool ContainsValue(long value)
         {
-            return Comparer<int>.Default.Compare(Minimum, value) <= 0 &&
-                Comparer<int>.Default.Compare(value, Maximum) <= 0;
+            return Comparer<long>.Default.Compare(Minimum, value) <= 0 &&
+                Comparer<long>.Default.Compare(value, Maximum) <= 0;
         }
 
-        public bool IsInsideRange(RangeInt range) =>
+        public bool IsInsideRange(RangeLong range) =>
             range.ContainsValue(Minimum) && range.ContainsValue(Maximum);
 
-        public bool ContainsRange(RangeInt range) =>
+        public bool ContainsRange(RangeLong range) =>
             ContainsValue(range.Minimum) && ContainsValue(range.Maximum);
 
-        public bool IsOverlapping(RangeInt range) =>
+        public bool IsOverlapping(RangeLong range) =>
             ContainsValue(range.Minimum) || ContainsValue(range.Maximum) ||
             range.ContainsValue(Minimum) || range.ContainsValue(Maximum);
 
-        public RangeInt Union(RangeInt range)
+        public RangeLong Union(RangeLong range)
         {
             if (!IsOverlapping(range))
                 return Void;
@@ -56,14 +56,14 @@ namespace CoperAlgoLib.Data
                 return range;
             if (ContainsRange(range))
                 return this;
-            return new RangeInt(
-                Comparer<int>.Default.Compare(Minimum, range.Minimum) < 0 ?
+            return new RangeLong(
+                Comparer<long>.Default.Compare(Minimum, range.Minimum) < 0 ?
                     Minimum : range.Minimum,
-                Comparer<int>.Default.Compare(Maximum, range.Maximum) > 0 ?
+                Comparer<long>.Default.Compare(Maximum, range.Maximum) > 0 ?
                     Maximum : range.Maximum);
         }
 
-        public RangeInt Intersect(RangeInt range)
+        public RangeLong Intersect(RangeLong range)
         {
             if (!IsOverlapping(range))
                 return Void;
@@ -71,10 +71,10 @@ namespace CoperAlgoLib.Data
                 return this;
             if (ContainsRange(range))
                 return range;
-            return new RangeInt(
-                Comparer<int>.Default.Compare(Minimum, range.Minimum) < 0 ?
+            return new RangeLong(
+                Comparer<long>.Default.Compare(Minimum, range.Minimum) < 0 ?
                     range.Minimum : Minimum,
-                Comparer<int>.Default.Compare(Maximum, range.Maximum) > 0 ?
+                Comparer<long>.Default.Compare(Maximum, range.Maximum) > 0 ?
                     range.Maximum : Maximum);
         }
     }

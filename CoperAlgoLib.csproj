@@ -10,6 +10,9 @@
     <Compile Update="Data\RangeUInt.cs">
       <DependentUpon>Range.tt</DependentUpon>
     </Compile>
+    <Compile Update="Data\RangeLong.cs">
+      <DependentUpon>Range.tt</DependentUpon>
+    </Compile>
     <Compile Update="Geometry\Point.cs">
       <DependentUpon>Point.tt</DependentUpon>
     </Compile>

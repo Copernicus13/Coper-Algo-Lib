@@ -7,8 +7,8 @@
 <#@ output extension="/" #>
 <#
     var manager = Manager.Create(Host, GenerationEnvironment);
-    var types = new[] { "int", "uint" };
-    var names = new[] { "Int", "UInt" };
+    var types = new[] { "int", "uint", "long" };
+    var names = new[] { "Int", "UInt", "Long" };
 
     for (int i = 0; i < types.Length; ++i)
     {
@@ -43,14 +43,19 @@ namespace <#=string.Format("{0}{1}{2}", manager.DefaultProjectNamespace,
 
         public <#=typeName#> Count { get { return Maximum - Minimum + 1; } }
 
-        public <#=className#>(<#=typeName#> min, <#=typeName#> max)
+        public <#=className#>(<#=typeName#> min, <#=typeName#>? max = default, <#=typeName#>? length = default)
         {
-            _Range = new Tuple<<#=typeName#>, <#=typeName#>>(min, max);
+            if (max.HasValue)
+                _Range = new Tuple<<#=typeName#>, <#=typeName#>>(min, max.Value);
+            else if (length.HasValue)
+                _Range = new Tuple<<#=typeName#>, <#=typeName#>>(min, min + length.Value - 1);
+            else
+                throw new ArgumentNullException();
         }
 
         public bool ContainsValue(<#=typeName#> value)
         {
-			return Comparer<<#=typeName#>>.Default.Compare(Minimum, value) <= 0 &&
+            return Comparer<<#=typeName#>>.Default.Compare(Minimum, value) <= 0 &&
                 Comparer<<#=typeName#>>.Default.Compare(value, Maximum) <= 0;
         }
 
@@ -64,7 +69,7 @@ namespace <#=string.Format("{0}{1}{2}", manager.DefaultProjectNamespace,
             ContainsValue(range.Minimum) || ContainsValue(range.Maximum) ||
             range.ContainsValue(Minimum) || range.ContainsValue(Maximum);
 
-		public <#=className#> Union(<#=className#> range)
+        public <#=className#> Union(<#=className#> range)
         {
             if (!IsOverlapping(range))
                 return Void;

@@ -2,6 +2,7 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="Data\RangeInt.cs">

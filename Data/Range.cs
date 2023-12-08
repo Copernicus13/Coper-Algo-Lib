@@ -17,18 +17,15 @@ namespace CoperAlgoLib.Data
 
         public T Count => Maximum - Minimum + T.One;
 
-        public Range(T min, T maxOrLength, bool isMax = true)
+        public Range(T min, T length)
         {
-            _range = new Tuple<T, T>(min, isMax ? maxOrLength : min + maxOrLength - T.One);
+            _range = new Tuple<T, T>(min, min + length - T.One);
         }
 
-        //public Range(T min, T max, T? length = default)
-        //{
-        //    if (length != null)
-        //        _range = new Tuple<T, T>(min, min + length - T.One);
-        //    else
-        //        _range = new Tuple<T, T>(min, max);
-        //}
+        public Range((T Min, T Max) bounds)
+        {
+            _range = new Tuple<T, T>(bounds.Min, bounds.Max);
+        }
 
         public bool ContainsValue(T value) =>
             Comparer<T>.Default.Compare(Minimum, value) <= 0 &&

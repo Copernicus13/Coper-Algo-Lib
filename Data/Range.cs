@@ -22,6 +22,7 @@ namespace CoperAlgoLib.Data
             _range = new Tuple<T, T>(min, min + length - T.One);
         }
 
+        /// <remarks>Please make sure that Min &lt;= Max</remarks>
         public Range((T Min, T Max) bounds)
         {
             _range = new Tuple<T, T>(bounds.Min, bounds.Max);

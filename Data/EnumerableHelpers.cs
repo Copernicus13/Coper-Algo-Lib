@@ -6,6 +6,11 @@ namespace CoperAlgoLib.Data
 {
     public static class EnumerableHelpers
     {
+        /// <remarks>
+        /// In order to optimize <see cref="Enumerable.Reverse{T}"/>,
+        /// data are not copied locally when the collection is indexable.<br />
+        /// Therefore, do not modify the collection while iterating it using this method.
+        /// </remarks>
         public static IEnumerable<T> ReverseEx<T>(this IEnumerable<T> coll)
         {
             // if coll is indexable

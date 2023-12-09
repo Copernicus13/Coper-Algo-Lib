@@ -5,6 +5,7 @@ namespace CoperAlgoLib.Data
     /// <remarks>
     /// For large dataset, you should consider using a LinkedList
     /// for better performance on Push and Pop operations.
+    /// Otherwise, use package Nito.Collections.Deque.
     /// </remarks>
     public class Deque<T> : List<T>
     {

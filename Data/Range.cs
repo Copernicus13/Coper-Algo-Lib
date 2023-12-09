@@ -9,7 +9,7 @@ namespace CoperAlgoLib.Data
     {
         private readonly Tuple<T, T> _range;
 
-        public static readonly Range<T> Void = new Range<T>(T.Zero, T.Zero);
+        public static readonly Range<T> Void = new Range<T>((T.Zero, T.Zero));
 
         public T Minimum => _range.Item1;
 
@@ -39,8 +39,7 @@ namespace CoperAlgoLib.Data
             ContainsValue(range.Minimum) && ContainsValue(range.Maximum);
 
         public bool IsOverlapping(Range<T> range) =>
-            ContainsValue(range.Minimum) || ContainsValue(range.Maximum) ||
-            range.ContainsValue(Minimum) || range.ContainsValue(Maximum);
+            Minimum <= range.Maximum && range.Minimum <= Maximum;
 
         public Range<T> Union(Range<T> range)
         {

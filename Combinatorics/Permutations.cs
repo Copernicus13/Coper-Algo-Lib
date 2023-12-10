@@ -11,7 +11,7 @@ namespace CoperAlgoLib.Combinatorics
     /// possible orderings of a set of values.  This list is enumerable and allows
     /// the scanning of all possible permutations using a simple foreach() loop.
     /// The MetaCollectionType parameter of the constructor allows for the creation of
-    /// two types of sets,  those with and without repetition in the output set when 
+    /// two types of sets,  those with and without repetition in the output set when
     /// presented with repetition in the input set.
     /// </summary>
     /// <remarks>
@@ -20,11 +20,17 @@ namespace CoperAlgoLib.Combinatorics
     /// {A A B}, {A B A}, {A A B}, {A B A}, {B A A}, {B A A}
     /// MetaCollectionType.WithoutRepetition =>
     /// {A A B}, {A B A}, {B A A}
-    /// 
-    /// When generating non-repetition sets, ordering is based on the lexicographic 
-    /// ordering of the lists based on the provided Comparer.  
+    ///
+    /// When given a input collect {A B C}, the following sets are generated:
+    /// MetaCollectionType.WithRepetition =>
+    /// {A B C}, {A C B}, {B A C}, {B C A}, {C A B}, {C B A}
+    /// MetaCollectionType.WithoutRepetition =>
+    /// {A B C}, {A C B}, {B A C}, {B C A}, {C A B}, {C B A}
+    ///
+    /// When generating non-repetition sets, ordering is based on the lexicographic
+    /// ordering of the lists based on the provided Comparer.
     /// If no comparer is provided, then T must be IComparable on T.
-    /// 
+    ///
     /// When generating repetition sets, no comparisions are performed and therefore
     /// no comparer is required and T does not need to be IComparable.
     /// </remarks>
@@ -41,10 +47,10 @@ namespace CoperAlgoLib.Combinatorics
         }
 
         /// <summary>
-        /// Create a permutation set from the provided list of values.  
-        /// The values (T) must implement IComparable.  
+        /// Create a permutation set from the provided list of values.
+        /// The values (T) must implement IComparable.
         /// If T does not implement IComparable use a constructor with an explict IComparer.
-        /// The repetition type defaults to MetaCollectionType.WithholdRepetitionSets
+        /// The repetition type defaults to MetaCollectionType.WithoutRepetition
         /// </summary>
         /// <param name="values">List of values to permute.</param>
         public Permutations(IList<T> values)
@@ -53,9 +59,9 @@ namespace CoperAlgoLib.Combinatorics
         }
 
         /// <summary>
-        /// Create a permutation set from the provided list of values.  
-        /// If type is MetaCollectionType.WithholdRepetitionSets, then values (T) must implement IComparable.  
-        /// If T does not implement IComparable use a constructor with an explict IComparer.
+        /// Create a permutation set from the provided list of values.
+        /// If type is MetaCollectionType.WithoutRepetition, then values (T) must implement IComparable.
+        /// If T does not implement IComparable use a constructor with an explicit IComparer.
         /// </summary>
         /// <param name="values">List of values to permute.</param>
         /// <param name="type">The type of permutation set to calculate.</param>
@@ -65,9 +71,9 @@ namespace CoperAlgoLib.Combinatorics
         }
 
         /// <summary>
-        /// Create a permutation set from the provided list of values.  
+        /// Create a permutation set from the provided list of values.
         /// The values will be compared using the supplied IComparer.
-        /// The repetition type defaults to MetaCollectionType.WithholdRepetitionSets
+        /// The repetition type defaults to MetaCollectionType.WithoutRepetition
         /// </summary>
         /// <param name="values">List of values to permute.</param>
         /// <param name="comparer">Comparer used for defining the lexigraphic order.</param>
@@ -126,7 +132,7 @@ namespace CoperAlgoLib.Combinatorics
             #region IEnumerator Interface
 
             /// <summary>
-            /// Resets the permutations enumerator to the first permutation.  
+            /// Resets the permutations enumerator to the first permutation.
             /// This will be the first lexicographically order permutation.
             /// </summary>
             public void Reset()
@@ -203,15 +209,15 @@ namespace CoperAlgoLib.Combinatorics
 
             /// <summary>
             /// Calculates the next lexicographical permutation of the set.
-            /// This is a permutation with repetition where values that compare as equal will not 
+            /// This is a permutation with repetition where values that compare as equal will not
             /// swap positions to create a new permutation.
             /// http://www.cut-the-knot.org/do_you_know/AllPerm.shtml
-            /// E. W. Dijkstra, A Discipline of Programming, Prentice-Hall, 1997  
+            /// E. W. Dijkstra, A Discipline of Programming, Prentice-Hall, 1997
             /// </summary>
             /// <returns>True if a new permutation has been returned, false if not.</returns>
             /// <remarks>
             /// This uses the integers of the lexicographical order of the values so that any
-            /// comparison of values are only performed during initialization. 
+            /// comparison of values are only performed during initialization.
             /// </remarks>
             private bool NextPermutation()
             {
@@ -308,16 +314,16 @@ namespace CoperAlgoLib.Combinatorics
 
         /// <summary>
         /// The count of all permutations that will be returned.
-        /// If type is MetaCollectionType.WithholdGeneratedSets, then this does not double count permutations with multiple identical values.  
-        /// I.e. count of permutations of "AAB" will be 3 instead of 6.  
+        /// If type is MetaCollectionType.WithholdGeneratedSets, then this does not double count permutations with multiple identical values.
+        /// I.e. count of permutations of "AAB" will be 3 instead of 6.
         /// If type is MetaCollectionType.WithRepetition, then this is all combinations and is therefore N!, where N is the number of values.
         /// </summary>
-        public long Count { get { return myCount; } }
+        public long Count { get; private set; }
 
         /// <summary>
         /// The type of Permutations set that is generated.
         /// </summary>
-        public GenerateOption Type { get { return myMetaCollectionType; } }
+        public GenerateOption Type { get; private set; }
 
         /// <summary>
         /// The upper index of the meta-collection, equal to the number of items in the initial set.
@@ -339,16 +345,16 @@ namespace CoperAlgoLib.Combinatorics
         /// </summary>
         /// <remarks>
         /// Copies information provided and then creates a parellel int array of lexicographic
-        /// orders that will be used for the actual permutation algorithm.  
+        /// orders that will be used for the actual permutation algorithm.
         /// The input array is first sorted as required for WithoutRepetition and always just for consistency.
         /// This array is constructed one of two way depending on the type of the collection.
         ///
         /// When type is MetaCollectionType.WithRepetition, then all N! permutations are returned
-        /// and the lexicographic orders are simply generated as 1, 2, ... N.  
+        /// and the lexicographic orders are simply generated as 1, 2, ... N.
         /// E.g.
         /// Input array:          {A A B C D E E}
         /// Lexicograhpic Orders: {1 2 3 4 5 6 7}
-        /// 
+        ///
         /// When type is MetaCollectionType.WithoutRepetition, then fewer are generated, with each
         /// identical element in the input array not repeated.  The lexicographic sort algorithm
         /// handles this natively as long as the repetition is repeated.
@@ -358,7 +364,7 @@ namespace CoperAlgoLib.Combinatorics
         /// </remarks>
         private void Initialize(IList<T> values, GenerateOption type, IComparer<T> comparer)
         {
-            myMetaCollectionType = type;
+            Type = type;
             myValues = new List<T>(values.Count);
             myValues.AddRange(values);
             myLexicographicOrders = new int[values.Count];
@@ -382,14 +388,14 @@ namespace CoperAlgoLib.Combinatorics
                     myLexicographicOrders[i] = j;
                 }
             }
-            myCount = GetCount();
+            Count = GetCount();
         }
 
         /// <summary>
-        /// Calculates the total number of permutations that will be returned.  
-        /// As this can grow very large, extra effort is taken to avoid overflowing the accumulator.  
+        /// Calculates the total number of permutations that will be returned.
+        /// As this can grow very large, extra effort is taken to avoid overflowing the accumulator.
         /// While the algorithm looks complex, it really is just collecting numerator and denominator terms
-        /// and cancelling out all of the denominator terms before taking the product of the numerator terms.  
+        /// and cancelling out all of the denominator terms before taking the product of the numerator terms.
         /// </summary>
         /// <returns>The number of permutations.</returns>
         private long GetCount()
@@ -442,22 +448,17 @@ namespace CoperAlgoLib.Combinatorics
             }
         }
 
-        /// <summary>
-        /// The count of all permutations.  Calculated at Initialization and returned by Count property.
-        /// </summary>
-        private long myCount;
-
-        /// <summary>
-        /// The type of Permutations that this was intialized from.
-        /// </summary>
-        private GenerateOption myMetaCollectionType;
-
         #endregion
 
         // ------------------------------------------
 
         #region Static straightforward implementation with array
 
+        /// <remarks>
+        /// This variant is computing results without repetition and should be called the first time
+        /// with an ordered input, otherwise the boolean return value will indicate<br />
+        /// the "end" with a « false » before having enumerated all the possibilities.
+        /// </remarks>
         public static bool GetNext<U>(U[] perm) where U : IComparable
         {
             int n = perm.Length;
@@ -478,12 +479,14 @@ namespace CoperAlgoLib.Combinatorics
                 if (perm[k].CompareTo(perm[i]) < 0)
                     l = i;
 
-            Utils.Swap(ref perm[k], ref perm[l]);
+            // Swap values
+            (perm[k], perm[l]) = (perm[l], perm[k]);
 
             Array.Reverse(perm, k + 1, perm.Length - (k + 1));
             return true;
         }
 
+        /// <inheritdoc cref="GetNext{U}"/>
         public static bool GetNext(ref string perm)
         {
             char[] charArray = perm.ToCharArray();

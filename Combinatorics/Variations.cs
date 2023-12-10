@@ -17,10 +17,18 @@ namespace CoperAlgoLib.Combinatorics
     /// normal Variations and Variations with Repetition.
     /// 
     /// When given an input collect {A B C} and lower index of 2, the following sets are generated:
-    /// MetaCollectionType.WithoutRepetition generates 6 sets: =>
-    ///     {A B}, {A B}, {B A}, {B C}, {C A}, {C B}
-    /// MetaCollectionType.WithRepetition generates 9 sets:
-    ///     {A A}, {A B}, {A B}, {B A}, {B B }, {B C}, {C A}, {C B}, {C C}
+    /// MetaCollectionType.WithRepetition generates 9 sets =>
+    ///     {A A}, {A B}, {A C}, {B A}, {B B}, {B C}, {C A}, {C B}, {C C}
+    /// MetaCollectionType.WithoutRepetition generates 6 sets =>
+    ///     {A B}, {A C}, {B A}, {C A}, {B C}, {C B}
+    ///
+    /// When given an input collect {A B C} and lower index of 3, the following sets are generated:
+    /// MetaCollectionType.WithRepetition generates 27 sets =>
+    ///     {A A A}, {A A B}, {A A C}, {A B A}, {A B B}, {A B C}, {A C A}, {A C B}, {A C C}
+    ///     {B A A}, {B A B}, {B A C}, {B B A}, {B B B}, {B B C}, {B C A}, {B C B}, {B C C}
+    ///     {C A A}, {C A B}, {C A C}, {C B A}, {C B B}, {C B C}, {C C A}, {C C B}, {C C C} 
+    /// MetaCollectionType.WithoutRepetition generates 6 sets =>
+    ///     {A B C}, {A C B}, {B A C}, {C A B}, {B C A}, {C B A}
     /// 
     /// The equality of multiple inputs is not considered when generating variations.
     /// </remarks>
@@ -53,7 +61,7 @@ namespace CoperAlgoLib.Combinatorics
         /// The upper index is calculated as values.Count, the lower index is specified.
         /// </summary>
         /// <param name="values">List of values to select variations from.</param>
-        /// <param name="lowerIndex">The size of each vatiation set to return.</param>
+        /// <param name="lowerIndex">The size of each variation set to return.</param>
         /// <param name="type">Type indicates whether to use repetition in set generation.</param>
         public Variations(IList<T> values, int lowerIndex, GenerateOption type)
         {
@@ -389,7 +397,7 @@ namespace CoperAlgoLib.Combinatorics
         /// <summary>
         /// The type of Variations set that is generated.
         /// </summary>
-        public GenerateOption Type { get { return myMetaCollectionType; } }
+        public GenerateOption Type { get; private set; }
 
         /// <summary>
         /// The upper index of the meta-collection, equal to the number of items in the initial set.
@@ -399,7 +407,7 @@ namespace CoperAlgoLib.Combinatorics
         /// <summary>
         /// The lower index of the meta-collection, equal to the number of items returned each iteration.
         /// </summary>
-        public int LowerIndex { get { return myLowerIndex; } }
+        public int LowerIndex { get; private set; }
 
         #endregion
 
@@ -413,8 +421,8 @@ namespace CoperAlgoLib.Combinatorics
         /// <param name="type">The type of variations set to generate.</param>
         private void Initialize(IList<T> values, int lowerIndex, GenerateOption type)
         {
-            myMetaCollectionType = type;
-            myLowerIndex = lowerIndex;
+            Type = type;
+            LowerIndex = lowerIndex;
             myValues = new List<T>();
             myValues.AddRange(values);
             if (type == GenerateOption.WithoutRepetition)
@@ -423,10 +431,10 @@ namespace CoperAlgoLib.Combinatorics
                 int index = 0;
                 for (int i = 0; i < myValues.Count; ++i)
                 {
-                    if (i >= myValues.Count - myLowerIndex)
+                    if (i >= myValues.Count - LowerIndex)
                         myMap.Add(index++);
                     else
-                        myMap.Add(Int32.MaxValue);
+                        myMap.Add(int.MaxValue);
                 }
                 myPermutations = new Permutations<int>(myMap);
             }
@@ -449,16 +457,6 @@ namespace CoperAlgoLib.Combinatorics
         /// Permutations object that handles permutations on int for variation inclusion and ordering.
         /// </summary>
         private Permutations<int> myPermutations;
-
-        /// <summary>
-        /// The type of the variation collection.
-        /// </summary>
-        private GenerateOption myMetaCollectionType;
-
-        /// <summary>
-        /// The lower index defined in the constructor.
-        /// </summary>
-        private int myLowerIndex;
 
         #endregion
     }

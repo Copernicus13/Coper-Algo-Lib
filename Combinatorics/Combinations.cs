@@ -1,5 +1,6 @@
 // Copyright 2008 Adrian Akison
 // Distributed under license terms of CPOL http://www.codeproject.com/info/cpol10.aspx
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,8 @@ using System.Linq;
 namespace CoperAlgoLib.Combinatorics
 {
     /// <summary>
-    /// Combinations defines a meta-collection, typically a list of lists, of all possible 
-    /// subsets of a particular size from the set of values.  This list is enumerable and 
+    /// Combinations defines a meta-collection, typically a list of lists, of all possible
+    /// subsets of a particular size from the set of values.  This list is enumerable and
     /// allows the scanning of all possible combinations using a simple foreach() loop.
     /// Within the returned set, there is no prescribed order.  This follows the mathematical
     /// concept of choose.  For example, put 10 dominoes in a hat and pick 5.  The number of possible
@@ -16,17 +17,24 @@ namespace CoperAlgoLib.Combinatorics
     /// </summary>
     /// <remarks>
     /// The MetaCollectionType parameter of the constructor allows for the creation of
-    /// two types of sets,  those with and without repetition in the output set when 
+    /// two types of sets,  those with and without repetition in the output set when
     /// presented with repetition in the input set.
-    /// 
+    ///
     /// When given a input collect {A B C} and lower index of 2, the following sets are generated:
     /// MetaCollectionType.WithRepetition =>
     /// {A A}, {A B}, {A C}, {B B}, {B C}, {C C}
     /// MetaCollectionType.WithoutRepetition =>
     /// {A B}, {A C}, {B C}
-    /// 
+    ///
+    /// When given a input collect {A B C} and lower index of 3, the following sets are generated:
+    /// MetaCollectionType.WithRepetition =>
+    /// {A A A}, {A A B}, {A A C}, {A B B}, {A B C}, {A C C}, {B B B}, {B B C}, {B C C}, {C C C}
+    /// MetaCollectionType.WithoutRepetition =>
+    /// {A B C}
+    ///
     /// Input sets with multiple equal values will generate redundant combinations in proprotion
-    /// to the likelyhood of outcome.  For example, {A A B B} and a lower index of 3 will generate:
+    /// to the likelyhood of outcome, even in mode MetaCollectionType.WithoutRepetition.
+    /// For example, {A A B B} and a lower index of 3 will generate:
     /// {A A B} {A A B} {A B B} {A B B}
     /// </remarks>
     /// <typeparam name="T">The type of the values within the list.</typeparam>
@@ -113,7 +121,7 @@ namespace CoperAlgoLib.Combinatorics
             #region IEnumerator interface
 
             /// <summary>
-            /// Resets the combinations enumerator to the first combination.  
+            /// Resets the combinations enumerator to the first combination.
             /// </summary>
             public void Reset()
             {
@@ -172,7 +180,7 @@ namespace CoperAlgoLib.Combinatorics
 
             /// <summary>
             /// The only complex function of this entire wrapper, ComputeCurrent() creates
-            /// a list of original values from the bool permutation provided.  
+            /// a list of original values from the bool permutation provided.
             /// The exception for accessing current (InvalidOperationException) is generated
             /// by the call to .Current on the underlying enumeration.
             /// </summary>
@@ -180,15 +188,15 @@ namespace CoperAlgoLib.Combinatorics
             /// To compute the current list of values, the underlying permutation object
             /// which moves with this enumerator, is scanned differently based on the type.
             /// The items have only two values, true and false, which have different meanings:
-            /// 
-            /// For type WithoutRepetition, the output is a straightforward subset of the input array.  
+            ///
+            /// For type WithoutRepetition, the output is a straightforward subset of the input array.
             /// E.g. 6 choose 3 without repetition
             /// Input array:   {A B C D E F}
             /// Permutations:  {0 1 0 0 1 1}
             /// Generates set: {A   C D    }
             /// Note: size of permutation is equal to upper index.
-            /// 
-            /// For type WithRepetition, the output is defined by runs of characters and when to 
+            ///
+            /// For type WithRepetition, the output is defined by runs of characters and when to
             /// move to the next element.
             /// E.g. 6 choose 5 with repetition
             /// Input array:   {A B C D E F}
@@ -253,7 +261,7 @@ namespace CoperAlgoLib.Combinatorics
         /// <summary>
         /// The type of Combinations set that is generated.
         /// </summary>
-        public GenerateOption Type { get { return myMetaCollectionType; } }
+        public GenerateOption Type { get; private set; }
 
         /// <summary>
         /// The upper index of the meta-collection, equal to the number of items in the initial set.
@@ -263,29 +271,29 @@ namespace CoperAlgoLib.Combinatorics
         /// <summary>
         /// The lower index of the meta-collection, equal to the number of items returned each iteration.
         /// </summary>
-        public int LowerIndex { get { return myLowerIndex; } }
+        public int LowerIndex { get; private set; }
 
         #endregion
 
         #region Heavy Lifting Members
 
         /// <summary>
-        /// Initialize the combinations by settings a copy of the values from the 
+        /// Initialize the combinations by settings a copy of the values from the
         /// </summary>
         /// <param name="values">List of values to select combinations from.</param>
         /// <param name="lowerIndex">The size of each combination set to return.</param>
         /// <param name="type">The type of Combinations set to generate.</param>
         /// <remarks>
-        /// Copies the array and parameters and then creates a map of booleans that will 
+        /// Copies the array and parameters and then creates a map of booleans that will
         /// be used by a permutations object to refence the subset.  This map is slightly
         /// different based on whether the type is with or without repetition.
-        /// 
+        ///
         /// When the type is WithoutRepetition, then a map of upper index elements is
-        /// created with lower index false’s.  
+        /// created with lower index false’s.
         /// E.g. 8 choose 3 generates:
         /// Map: {1 1 1 1 1 0 0 0}
         /// Note: For sorting reasons, false denotes inclusion in output.
-        /// 
+        ///
         /// When the type is WithRepetition, then a map of upper index - 1 + lower index
         /// elements is created with the falses indicating that the 'current' element should
         /// be included and the trues meaning to advance the 'current' element by one.
@@ -294,8 +302,8 @@ namespace CoperAlgoLib.Combinatorics
         /// </remarks>
         private void Initialize(IList<T> values, int lowerIndex, GenerateOption type)
         {
-            myMetaCollectionType = type;
-            myLowerIndex = lowerIndex;
+            Type = type;
+            LowerIndex = lowerIndex;
             myValues = new List<T>();
             myValues.AddRange(values);
             List<bool> myMap = new List<bool>();
@@ -303,7 +311,7 @@ namespace CoperAlgoLib.Combinatorics
             {
                 for (int i = 0; i < myValues.Count; ++i)
                 {
-                    if (i >= myValues.Count - myLowerIndex)
+                    if (i >= myValues.Count - LowerIndex)
                         myMap.Add(false);
                     else
                         myMap.Add(true);
@@ -313,7 +321,7 @@ namespace CoperAlgoLib.Combinatorics
             {
                 for (int i = 0; i < values.Count - 1; ++i)
                     myMap.Add(true);
-                for (int i = 0; i < myLowerIndex; ++i)
+                for (int i = 0; i < LowerIndex; ++i)
                     myMap.Add(false);
             }
             myPermutations = new Permutations<bool>(myMap);
@@ -333,26 +341,20 @@ namespace CoperAlgoLib.Combinatorics
         /// </summary>
         private Permutations<bool> myPermutations;
 
-        /// <summary>
-        /// The type of the combination collection.
-        /// </summary>
-        private GenerateOption myMetaCollectionType;
-
-        /// <summary>
-        /// The lower index defined in the constructor.
-        /// </summary>
-        private int myLowerIndex;
-
         #endregion
 
         // ------------------------------------------
 
         #region Static straightforward implementation with array
 
+        /// <remarks>
+        /// When given an input collection {A B C}, the following sets are generated:
+        /// { }, {A}, {B}, {A B}, {C}, {A C}, {B C}, {A B C}
+        /// </remarks>
         public static T[][] FastPowerSet(T[] seq)
         {
             var powerSet = new T[1 << seq.Length][];
-            powerSet[0] = new T[0]; // empty set
+            powerSet[0] = Array.Empty<T>(); // empty set
             for (int i = 0; i < seq.Length; ++i)
             {
                 var cur = seq[i];
@@ -369,6 +371,7 @@ namespace CoperAlgoLib.Combinatorics
             return powerSet;
         }
 
+        /// <inheritdoc cref="FastPowerSet(T[])"/>
         public static string[] FastPowerSet(string seq)
         {
             return Combinations<char>.FastPowerSet(seq.ToCharArray())

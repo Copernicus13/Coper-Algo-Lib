@@ -16,47 +16,70 @@ namespace CoperAlgoLib.Data
 
         public static T[] GetRow<T>(this T[,] map, int row)
         {
-            var width = map.GetLength(1);
+            int width = map.GetLength(1);
             var subMap = new T[width];
-            for (int i = 0; i < width; ++i)
-                subMap[i] = map[row, i];
+            for (int x = 0; x < width; ++x)
+                subMap[x] = map[row, x];
             return subMap;
         }
 
         public static T[] GetColumn<T>(this T[,] map, int column)
         {
-            var height = map.GetLength(0);
+            int height = map.GetLength(0);
             var subMap = new T[height];
-            for (int j = 0; j < height; ++j)
-                subMap[j] = map[j, column];
+            for (int y = 0; y < height; ++y)
+                subMap[y] = map[y, column];
             return subMap;
         }
 
         public static List<T> ToList<T>(this T[,] map, bool rowFirst = true)
         {
-            var width = map.GetLength(1);
-            var height = map.GetLength(0);
             var result = new List<T>();
             if (rowFirst)
-                for (int j = 0; j < height; ++j)
-                    result.AddRange(map.GetRow(j).ToList());
+            {
+                int height = map.GetLength(0);
+                for (int y = 0; y < height; ++y)
+                    result.AddRange(map.GetRow(y).ToList());
+            }
             else
-                for (int i = 0; i < width; ++i)
-                    result.AddRange(map.GetColumn(i).ToList());
+            {
+                int width = map.GetLength(1);
+                for (int x = 0; x < width; ++x)
+                    result.AddRange(map.GetColumn(x).ToList());
+            }
             return result;
         }
 
         public static List<List<T>> ToListList<T>(this T[,] map, bool rowFirst = true)
         {
-            var width = map.GetLength(1);
-            var height = map.GetLength(0);
             var result = new List<List<T>>();
             if (rowFirst)
-                for (int j = 0; j < height; ++j)
-                    result.Add(map.GetRow(j).ToList());
+            {
+                int height = map.GetLength(0);
+                for (int y = 0; y < height; ++y)
+                    result.Add(map.GetRow(y).ToList());
+            }
             else
-                for (int i = 0; i < width; ++i)
-                    result.Add(map.GetColumn(i).ToList());
+            {
+                int width = map.GetLength(1);
+                for (int x = 0; x < width; ++x)
+                    result.Add(map.GetColumn(x).ToList());
+            }
+            return result;
+        }
+
+        /// <remarks>
+        /// The input list must have at least one element and
+        /// all inner lists should have the same size as the first inner list
+        /// </remarks>
+        public static T[,] ToJaggedArray<T>(this List<List<T>> list)
+        {
+            int width = list[0].Count;
+            int height = list.Count;
+            var result = new T[height, width];
+            for (int y = 0; y < height; ++y)
+                for (int x = 0; x < width; ++x)
+                    result[y, x] = list[y][x];
             return result;
         }
     }

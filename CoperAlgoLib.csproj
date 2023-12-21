@@ -28,13 +28,13 @@
     <Compile Update="Geometry\Point.cs">
       <DependentUpon>Point.tt</DependentUpon>
     </Compile>
+	    <Compile Update="Geometry\PointL.cs">
+      <DependentUpon>Point.tt</DependentUpon>
+    </Compile>
     <Compile Update="Geometry\PointD.cs">
       <DependentUpon>Point.tt</DependentUpon>
     </Compile>
     <Compile Update="Geometry\PointF.cs">
-      <DependentUpon>Point.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Geometry\PointUInt.cs">
       <DependentUpon>Point.tt</DependentUpon>
     </Compile>
     <Compile Update="Geometry\Size.cs">

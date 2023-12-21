@@ -6,9 +6,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System;
+
 namespace CoperAlgoLib.Geometry
 {
-    public struct PointD
+    public struct PointD : IEquatable<PointD>
     {
         public double X;
         public double Y;
@@ -18,5 +20,15 @@ namespace CoperAlgoLib.Geometry
             X = x;
             Y = y;
         }
+
+        public override bool Equals(object obj) => obj is PointD other && Equals(other);
+
+        public override int GetHashCode() => HashCode.Combine(X, Y);
+
+        public bool Equals(PointD other) => X == other.X && Y == other.Y;
+
+        public static bool operator ==(PointD lhs, PointD rhs) => lhs.Equals(rhs);
+
+        public static bool operator !=(PointD lhs, PointD rhs) => !lhs.Equals(rhs);
     }
 }
